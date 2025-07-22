@@ -31,7 +31,7 @@ function App() {
               <Route path="/trips" element={<AllTrips />} />
               <Route path="/mytrips" element={<MyTrips />} />
               <Route path="/complaint" element={<Complaint />} />
-              <Route path="/review" element={<TripInfo />} />
+              <Route path="/TripInfo/:id" element={<TripInfo />} />
             </Route>
             <Route path="*" element={<h1>hello login</h1>} />
           </Routes>
@@ -72,7 +72,6 @@ function App() {
           },
         }}
       />
-      
     </>
   );
 }

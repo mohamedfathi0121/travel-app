@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-=======
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
->>>>>>> 8d6b443a2d2354c2700dc0d259df5f3510edf52c
 import StatsSection from "../components/TripDeatailsComponents/StatsSection";
 import TripName from "../components/TripDeatailsComponents/TripName";
 import TripVRVideo from "../components/TripDeatailsComponents/VrPlayer";
@@ -15,12 +12,9 @@ import NotIncludedItems from "../components/TripDeatailsComponents/NotIncludedIt
 import RoomPrices from "../components/TripDeatailsComponents/RoomPrices";
 import HotelNotes from "../components/TripDeatailsComponents/HotelNotes";
 import HotelLocation from "../components/TripDeatailsComponents/HotelLocation";
-<<<<<<< HEAD
-=======
 import ReviewSection from "../components/TripDeatailsComponents/Reviews";
 import InquiryFormSection from "../components/TripDeatailsComponents/InquiryForm";
 import VrCard from "../components/TripDeatailsComponents/VrCard";
->>>>>>> 8d6b443a2d2354c2700dc0d259df5f3510edf52c
 
 export default function TripDetails() {
   const { tripId } = useParams();
@@ -37,7 +31,6 @@ export default function TripDetails() {
   const [bookingInfo, setBookingInfo] = useState({});
   const [scheduleId, setScheduleId] = useState(null); // ✅ جديد
   const [errorMsg, setErrorMsg] = useState("");
-
 
   useEffect(() => {
     const fetchTripData = async () => {
@@ -63,7 +56,9 @@ export default function TripDetails() {
 
       const { data: scheduleData, error: scheduleError } = await supabase
         .from("trip_schedules")
-        .select("id, price_include, price_not_include, start_date, end_date, price, location_url")
+        .select(
+          "id, price_include, price_not_include, start_date, end_date, price, location_url"
+        )
         .eq("base_trip_id", tripId)
         .single();
 
@@ -101,109 +96,82 @@ export default function TripDetails() {
     fetchTripData();
   }, [tripId]);
 
-const handleBooking = async () => {
-  const userId = "a6092e3b-e4c0-46d3-a696-029fc032daa4"; // مؤقتًا
-  console.log("📦 Booking Info:", bookingInfo);
-console.log("📦 scheduleId:", scheduleId);
-console.log("📦 tripId:", tripId);
-console.log("📦 Final Payload:", {
-  user_id: userId,
-  trip_schedule_id: scheduleId,
-  base_trip_id: tripId,
-  booking_info: bookingInfo,
-});
+  const handleBooking = async () => {
+    const userId = "a6092e3b-e4c0-46d3-a696-029fc032daa4"; // مؤقتًا
+    console.log("📦 Booking Info:", bookingInfo);
+    console.log("📦 scheduleId:", scheduleId);
+    console.log("📦 tripId:", tripId);
+    console.log("📦 Final Payload:", {
+      user_id: userId,
+      trip_schedule_id: scheduleId,
+      base_trip_id: tripId,
+      booking_info: bookingInfo,
+    });
 
-//   const userId = "1a0ff618-498e-4b3a-82bc-b9944b1f1f49"; // مؤقتًا
+    //   const userId = "1a0ff618-498e-4b3a-82bc-b9944b1f1f49"; // مؤقتًا
 
-  if (!scheduleId || !tripId) {
-    alert("لم يتم تحميل بيانات الرحلة أو الجدول الزمني.");
-    return;
-  }
-
-  // ✅ التحقق من أن المستخدم اختار على الأقل غرفة واحدة
-  if (
-    (bookingInfo.singleRooms || 0) === 0 &&
-    (bookingInfo.doubleRooms || 0) === 0 &&
-    (bookingInfo.tripleRooms || 0) === 0
-  ) {
-    setErrorMsg("Please select the room first for continuous booking.");
-return;
-
-    
-  }
-
-  const payload = {
-    user_id: userId,
-    trip_schedule_id: scheduleId,
-    base_trip_id: tripId,
-    booking_info: bookingInfo,
-  };
-
-  try {
-    const response = await fetch(
-      "https://iklzpmnhifxwgmqydths.supabase.co/functions/v1/create-checkout-session",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // "Origin": window.location.origin,
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || "فشل في إنشاء جلسة الدفع.");
+    if (!scheduleId || !tripId) {
+      alert("لم يتم تحميل بيانات الرحلة أو الجدول الزمني.");
+      return;
     }
 
-    window.location.href = result.url;
-  } catch (err) {
-    console.error("❌ Error creating checkout session:", err.message);
-    alert("فشل إنشاء جلسة الدفع. حاول مرة أخرى.");
-  }
-};
+    // ✅ التحقق من أن المستخدم اختار على الأقل غرفة واحدة
+    if (
+      (bookingInfo.singleRooms || 0) === 0 &&
+      (bookingInfo.doubleRooms || 0) === 0 &&
+      (bookingInfo.tripleRooms || 0) === 0
+    ) {
+      setErrorMsg("Please select the room first for continuous booking.");
+      return;
+    }
 
+    const payload = {
+      user_id: userId,
+      trip_schedule_id: scheduleId,
+      base_trip_id: tripId,
+      booking_info: bookingInfo,
+    };
 
+    try {
+      const response = await fetch(
+        "https://iklzpmnhifxwgmqydths.supabase.co/functions/v1/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // "Origin": window.location.origin,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
+      const result = await response.json();
 
-  if (loading) return <div className="p-6 text-center text-lg">جارٍ تحميل تفاصيل الرحلة...</div>;
-  if (error) return <div className="p-6 text-center text-red-600 text-lg">{error}</div>;
-  if (!tripData) return <div className="p-6 text-center text-gray-500 text-lg">لا توجد بيانات للرحلة.</div>;
+      if (!response.ok) {
+        throw new Error(result.message || "فشل في إنشاء جلسة الدفع.");
+      }
+
+      window.location.href = result.url;
+    } catch (err) {
+      console.error("❌ Error creating checkout session:", err.message);
+      alert("فشل إنشاء جلسة الدفع. حاول مرة أخرى.");
+    }
+  };
+
+  if (loading)
+    return (
+      <div className="p-6 text-center text-lg">جارٍ تحميل تفاصيل الرحلة...</div>
+    );
+  if (error)
+    return <div className="p-6 text-center text-red-600 text-lg">{error}</div>;
+  if (!tripData)
+    return (
+      <div className="p-6 text-center text-gray-500 text-lg">
+        لا توجد بيانات للرحلة.
+      </div>
+    );
 
   return (
-<<<<<<< HEAD
-    <>
-      {/* <Helmet>
-        <title>تفاصيل الرحله </title>
-        <meta name="description" content="اكتشف تفاصيل الرحله، الإقامة، الأسعار، والمميزات الخاصة بالفندق." />
-        <meta property="og:title" content="تفاصيل الرحلة - شرم الشيخ" />
-        <meta property="og:description" content="أفضل عروض الرحلات والفنادق في شرم الشيخ." />
-      </Helmet> */}
-      <div className="p-4 space-y-6">
-        <StatsSection />
-        <HotelName />
-        <HotelVRVideo />
-        <HotelGallery />
-        <HotelFeatures />
-        <IncludedItems />
-        <NotIncludedItems />
-        <RoomPrices />
-        <HotelNotes />
-        <HotelLocation />
-
-        <button
-          className="fixed bottom-4 right-4 bg-header-background text-text-primary px-6 py-3 rounded-full shadow-lg hover:bg-btn-primary-hover transition-all text-lg z-50"
-          onClick={() => {
-            window.location.href = "/booking"; // مثال
-          }}
-        >
-          احجز الآن
-        </button>
-      </div>
-    </>
-=======
     <div className="min-h-screen bg-background text-black p-4 space-y-6">
       <StatsSection statsData={statsData} />
       <TripName
@@ -228,12 +196,15 @@ return;
         country={tripData.country}
         city={tripData.city}
       />
-      <InquiryFormSection priceData={statsData?.price || {}} setBookingInfo={setBookingInfo} />
-       {errorMsg && (
-  <div className="max-w-2xl mx-auto bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center">
-    {errorMsg}
-  </div>
-)}
+      <InquiryFormSection
+        priceData={statsData?.price || {}}
+        setBookingInfo={setBookingInfo}
+      />
+      {errorMsg && (
+        <div className="max-w-2xl mx-auto bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center">
+          {errorMsg}
+        </div>
+      )}
       <HotelLocation locationUrl={locationUrl} />
 
       <button
@@ -243,7 +214,5 @@ return;
         Book Now
       </button>
     </div>
->>>>>>> 8d6b443a2d2354c2700dc0d259df5f3510edf52c
   );
 }
-

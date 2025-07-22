@@ -5,7 +5,6 @@ export default function PaymentPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      
       <div className="flex justify-center px-4 pt-12 pb-16">
         <div className="w-full max-w-2xl space-y-8">
           <h1 className="text-3xl font-bold text-text-primary">Payment</h1>
@@ -21,8 +20,7 @@ export default function PaymentPage() {
                   name="paymentMethod"
                   value="PayPal"
                   checked={method === "PayPal"}
-                  onChange={e => setMethod(e.target.value)}
-                  
+                  onChange={(e) => setMethod(e.target.value)}
                 />
                 <span className="text-base font-medium text-text-primary">
                   PayPal
@@ -34,7 +32,7 @@ export default function PaymentPage() {
                   name="paymentMethod"
                   value="CreditCard"
                   checked={method === "CreditCard"}
-                  onChange={e => setMethod(e.target.value)}
+                  onChange={(e) => setMethod(e.target.value)}
                 />
                 <span className=" text-base font-medium text-text-primary">
                   Credit Card
@@ -73,11 +71,7 @@ export default function PaymentPage() {
                 <input
                   type="text"
                   placeholder="123"
-<<<<<<< HEAD
-                  className="bg-input w-full px-4 placeholder-text-secondary py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
-=======
                   className="bg-input w-full px-4 placeholder-text-secondary py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-button-primary transition-colors duration-200"
->>>>>>> 8d6b443a2d2354c2700dc0d259df5f3510edf52c
                 />
               </div>
             </div>
@@ -89,23 +83,14 @@ export default function PaymentPage() {
               <input
                 type="text"
                 placeholder="Enter name"
-<<<<<<< HEAD
-                className=" bg-input w-full px-4 py-3 border  placeholder-text-secondary border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
-=======
                 className=" bg-input w-full px-4 py-3 border  placeholder-text-secondary border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-button-primary transition-colors duration-200"
->>>>>>> 8d6b443a2d2354c2700dc0d259df5f3510edf52c
               />
             </div>
 
             <div className="w-full max-w-md">
               <button
                 type="submit"
-<<<<<<< HEAD
-      className="w-full py-3 rounded-2xl bg-btn-primary text-text-primary font-semibold text-sm hover:bg-btn-primary-hover transition"
-=======
-      className="w-full py-3 rounded-2xl bg-button-primary text-text-primary font-semibold text-sm hover:bg-btn-primary-hover transition"
->>>>>>> 8d6b443a2d2354c2700dc0d259df5f3510edf52c
-
+                className="w-full py-3 rounded-2xl bg-button-primary text-text-primary font-semibold text-sm hover:bg-btn-primary-hover transition"
               >
                 Pay Now
               </button>
