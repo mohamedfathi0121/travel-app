@@ -3,10 +3,11 @@ import { supabase } from "../../utils/supabaseClient";
 import TripTabs from "./TripTabs";
 import TripCard from "./TripCard";
 import { useNavigate } from "react-router-dom";
-import { id } from "zod/v4/locales";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function TripPage() {
   const navigate = useNavigate();
+  const { user } = useAuth(); // 👈 جلب بيانات المستخدم الحالي
   const [trips, setTrips] = useState([]);
   const [currentTab, setCurrentTab] = useState("Approved");
 
@@ -27,31 +28,44 @@ export default function TripPage() {
 
   useEffect(() => {
     const fetchTrips = async () => {
-      const { data, error } = await supabase.from("trip_schedules").select(`
-        id,
-        start_date,
-        end_date,
-        status,
-        location_url,
-        base_trips (
+      if (!user?.id) return;
+
+      const { data: bookings, error } = await supabase
+        .from("bookings")
+        .select(
+          `
           id,
-          title,
-          description,
-          photo_urls,
-          city
+          trip_schedules (
+            id,
+            start_date,
+            end_date,
+            status,
+            location_url,
+            base_trips (
+              id,
+              title,
+              description,
+              photo_urls,
+              city
+            )
+          )
+        `
         )
-      `);
+        .eq("user_id", user.id);
 
       if (error) {
-        console.error("Error fetching trips:", error.message);
+        console.error("Error fetching bookings:", error.message);
         return;
       }
 
       const today = new Date();
 
-      const mappedTrips = data.map((trip) => {
-        const start = new Date(trip.start_date);
-        const end = new Date(trip.end_date);
+      const mappedTrips = bookings.map((booking) => {
+        const trip = booking.trip_schedules;
+        const baseTrip = trip?.base_trips;
+
+        const start = new Date(trip?.start_date);
+        const end = new Date(trip?.end_date);
 
         let status = "Not Approved";
 
@@ -74,9 +88,9 @@ export default function TripPage() {
         return {
           id: trip.id,
           status,
-          title: trip.base_trips?.title || "Untitled",
+          title: baseTrip?.title || "Untitled",
           date: `${startFormatted.date} at ${startFormatted.time}\n→ ${endFormatted.date} at ${endFormatted.time}`,
-          image: trip.base_trips?.photo_urls?.[0] || "/default-trip-image.jpg",
+          image: baseTrip?.photo_urls?.[0] || "/default-trip-image.jpg",
         };
       });
 
@@ -84,7 +98,7 @@ export default function TripPage() {
     };
 
     fetchTrips();
-  }, []);
+  }, [user?.id]);
 
   const filteredTrips = trips.filter((trip) => trip.status === currentTab);
 
