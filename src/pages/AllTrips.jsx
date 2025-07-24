@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../supabase";
+import { supabase } from "../utils/supabase";
 
 const AllTrips = () => {
   const [trips, setTrips] = useState([]);
@@ -14,14 +14,17 @@ const AllTrips = () => {
 
   useEffect(() => {
     const fetchTrips = async () => {
-      const { data, error } = await supabase.from("base_trips").select("*");
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("trip_schedules")
+        .select("*, base_trips(*)");
 
       if (error) {
         console.error("Supabase fetch error:", error);
       } else {
         const today = new Date();
         const upcomingTrips = data.filter((trip) => {
-          const endDate = new Date(trip.end_date);
+          const endDate = new Date(trip.base_trips?.end_date);
           return endDate >= today;
         });
         setTrips(upcomingTrips);
@@ -38,23 +41,25 @@ const AllTrips = () => {
 
     if (city) {
       result = result.filter((trip) =>
-        trip.city?.toLowerCase().includes(city.toLowerCase())
+        trip.base_trips?.city?.toLowerCase().includes(city.toLowerCase())
       );
     }
 
     if (country) {
       result = result.filter((trip) =>
-        trip.country?.toLowerCase().includes(country.toLowerCase())
+        trip.base_trips?.country?.toLowerCase().includes(country.toLowerCase())
       );
     }
 
     if (price) {
-      result = result.filter((trip) => Number(trip.price) <= Number(price));
+      result = result.filter(
+        (trip) => Number(trip.base_trips?.price) <= Number(price)
+      );
     }
 
     if (time) {
       result = result.filter((trip) =>
-        trip.time?.toLowerCase().includes(time.toLowerCase())
+        trip.base_trips?.time?.toLowerCase().includes(time.toLowerCase())
       );
     }
 
@@ -125,10 +130,10 @@ const AllTrips = () => {
         ) : (
           currentTrips.map((trip, index) => (
             <div key={trip.id || index} className="p-4 bg-input shadow rounded text-text-primary">
-              {trip.photo_urls ? (
+              {trip.base_trips?.photo_urls ? (
                 <img
-                  src={trip.photo_urls}
-                  alt={trip.title}
+                  src={trip.base_trips.photo_urls}
+                  alt={trip.base_trips.title}
                   className="w-full h-48 object-cover rounded mb-2"
                 />
               ) : (
@@ -136,12 +141,12 @@ const AllTrips = () => {
                   No Image
                 </div>
               )}
-              <h3 className="font-bold text-lg">{trip.title}</h3>
-              <p className="text-sm text-text-secondary">{trip.description}</p>
-              <p className="text-sm text-text-secondary">City: {trip.city}</p>
-              <p className="text-sm text-text-secondary">Country: {trip.country}</p>
-              <p className="text-sm text-text-secondary">Price: ${trip.price}</p>
-              <p className="text-sm text-text-secondary">Time: {trip.time}</p>
+              <h3 className="font-bold text-lg">{trip.base_trips?.title}</h3>
+              <p className="text-sm text-text-secondary">{trip.base_trips?.description}</p>
+              <p className="text-sm text-text-secondary">City: {trip.base_trips?.city}</p>
+              <p className="text-sm text-text-secondary">Country: {trip.base_trips?.country}</p>
+              <p className="text-sm text-text-secondary">Price: ${trip.base_trips?.price}</p>
+              <p className="text-sm text-text-secondary">Time: {trip.base_trips?.time}</p>
             </div>
           ))
         )}
